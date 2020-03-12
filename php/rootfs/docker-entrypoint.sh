@@ -56,5 +56,6 @@ composer create-project processwire/processwire pw -d /var/www/html/public/
 
 wireshell new --dbUser $mysql_user --dbPass $mysql_pw --dbName $mysql_db --dbHost mysql --dbCharset utf8mb4 --username admin --userpass password --useremail email@domain.com --profile classic --src /var/www/html/public/ --adminUrl admin /var/www/html/public/
 rm -r /var/www/html/tmp/
+chown 1000:1000 -R /var/www/html/public/
 
 "$@"
