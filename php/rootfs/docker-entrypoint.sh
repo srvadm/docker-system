@@ -1,0 +1,60 @@
+#!/bin/sh
+
+mkdir -p /var/www/html/public /var/www/logs/php /var/www/configs/php /var/www/bin/.composer
+chown 1000:1000 /var/www/configs/php/ /var/www/logs/php/ /var/www/html/public/
+
+if ! [ -f "/var/www/bin/composer" ]; then
+  curl -sS https://getcomposer.org/installer | php -- --install-dir=/var/www/bin --filename=composer
+else
+  php /var/www/bin/composer self-update
+fi
+export PATH="/var/www/bin:$PATH"
+if ! [ -f "/var/www/bin/.composer/vendor/bin/wireshell" ]; then
+  php -d memory_limit=-1 /var/www/bin/composer global require wireshell/wireshell -d /var/www/bin/.composer/
+else
+  php /var/www/bin/composer update wireshell/wireshell -d /var/www/bin/.composer/
+fi
+export PATH="/var/www/bin/.composer/vendor/bin:$PATH"
+
+if [ -z ${mysql_user-} ]; then
+  echo you need to define a mysql user
+  exit 1
+fi
+if [ -z ${mysql_pw-} ]; then
+  echo you need to define a mysql user password
+  exit 1
+fi
+if [ -z ${mysql_db-} ]; then
+  echo you need to define a mysql database
+  exit 1
+fi
+
+mkdir -p /var/www/html/tmp/
+
+cat << EOF > /var/www/html/tmp/wait_for_mysql.php
+<?php
+\$connected = false;
+while(!\$connected) {
+    try{
+        \$dbh = new pdo( 
+            'mysql:host=mysql:3306;dbname=$mysql_db', '$mysql_user', '$mysql_pw',
+            array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION)
+        );
+        \$connected = true;
+    }
+    catch(PDOException \$ex){
+//        error_log("Could not connect to MySQL");
+//        error_log(\$ex->getMessage());
+//        error_log("Waiting for MySQL Connection.");
+        sleep(5);
+    }
+}
+EOF
+php /var/www/html/tmp/wait_for_mysql.php
+
+composer create-project processwire/processwire pw -d /var/www/html/public/
+
+wireshell new --dbUser $mysql_user --dbPass $mysql_pw --dbName $mysql_db --dbHost mysql --dbCharset utf8mb4 --username admin --userpass password --useremail email@domain.com --profile classic --src /var/www/html/public/ --adminUrl admin /var/www/html/public/
+rm -r /var/www/html/tmp/
+
+"$@"
