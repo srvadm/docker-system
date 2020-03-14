@@ -1,6 +1,6 @@
 #!/bin/sh
 
-mkdir -p /var/www/html/public /var/www/logs/php /var/www/configs/php /var/www/bin/.composer
+mkdir -p /var/www/logs/php /var/www/configs/php /var/www/bin/.composer
 chown 1000:1000 /var/www/configs/php/ /var/www/logs/php/
 
 if ! [ -f "/var/www/bin/composer" ]; then
