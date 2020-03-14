@@ -8,13 +8,12 @@ if ! [ -f "/var/www/bin/composer" ]; then
 else
   php /var/www/bin/composer self-update
 fi
-export PATH="/var/www/bin:$PATH"
 if ! [ -f "/var/www/bin/.composer/vendor/bin/wireshell" ]; then
   php -d memory_limit=-1 /var/www/bin/composer global require wireshell/wireshell -d /var/www/bin/.composer/
 else
   php /var/www/bin/composer update wireshell/wireshell -d /var/www/bin/.composer/
 fi
-export PATH="/var/www/bin/.composer/vendor/bin:$PATH"
+ln -s /var/www/bin/.composer/vendor/bin/wireshell /var/www/bin/wireshell
 
 if [ -z ${mysql_user-} ]; then
   echo you need to define a mysql user
@@ -26,6 +25,18 @@ if [ -z ${mysql_pw-} ]; then
 fi
 if [ -z ${mysql_db-} ]; then
   echo you need to define a mysql database
+  exit 1
+fi
+if [ -z ${pw_user-} ]; then
+  echo you need to define a processwire user
+  exit 1
+fi
+if [ -z ${pw_pwd-} ]; then
+  echo you need to define a processwire user-password
+  exit 1
+fi
+if [ -z ${pw_email-} ]; then
+  echo you need to define a processwire user-email
   exit 1
 fi
 
@@ -54,7 +65,7 @@ php /var/www/html/tmp/wait_for_mysql.php
 
 composer create-project processwire/processwire public -d /var/www/html/
 
-wireshell new --dbUser $mysql_user --dbPass $mysql_pw --dbName $mysql_db --dbHost mysql --dbCharset utf8mb4 --username admin --userpass password --useremail email@domain.com --profile classic --src /var/www/html/public/ --adminUrl admin /var/www/html/public/
+wireshell new --dbUser $mysql_user --dbPass $mysql_pw --dbName $mysql_db --dbHost mysql --dbCharset utf8mb4 --username $pw_user --userpass $pw_pwd --useremail $pw_email --profile regular --src /var/www/html/public/ --adminUrl admin /var/www/html/public/
 rm -r /var/www/html/tmp/
 chown 1000:1000 -R /var/www/html/public/
 
