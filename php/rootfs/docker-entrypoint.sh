@@ -63,7 +63,7 @@ while(!\$connected) {
 EOF
 php /var/www/html/tmp/wait_for_mysql.php
 
-if [ -n "$(ls -A /var/www/html/public/)" ]; then
+if ! [ -n "$(ls -A /var/www/html/public/)" ]; then
   /var/www/bin/composer create-project processwire/processwire public -d /var/www/html/
   /var/www/bin/wireshell new --dbUser $mysql_user --dbPass $mysql_pw --dbName $mysql_db --dbHost mysql --dbCharset utf8mb4 --username $pw_user --userpass $pw_pwd --useremail $pw_email --profile regular --src /var/www/html/public/ --adminUrl admin /var/www/html/public/
   chown 1000:1000 -R /var/www/html/public/
