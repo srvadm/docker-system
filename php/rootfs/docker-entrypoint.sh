@@ -4,7 +4,7 @@ mkdir -p /var/www/html/public /var/www/logs/php /var/www/configs/php
 chown 1000:1000 /var/www/configs/php/ /var/www/logs/php/
 
 if ! [ -f "/var/www/bin/composer" ]; then
-    mkdir -p /var/www/bin
+  mkdir -p /var/www/bin/.composer
   curl -sS https://getcomposer.org/installer | php -- --install-dir=/var/www/bin --filename=composer
 else
   php /var/www/bin/composer self-update
