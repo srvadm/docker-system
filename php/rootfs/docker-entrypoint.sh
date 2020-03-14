@@ -63,9 +63,9 @@ while(!\$connected) {
 EOF
 php /var/www/html/tmp/wait_for_mysql.php
 
-composer create-project processwire/processwire public -d /var/www/html/
+/var/www/bin/composer create-project processwire/processwire public -d /var/www/html/
 
-wireshell new --dbUser $mysql_user --dbPass $mysql_pw --dbName $mysql_db --dbHost mysql --dbCharset utf8mb4 --username $pw_user --userpass $pw_pwd --useremail $pw_email --profile regular --src /var/www/html/public/ --adminUrl admin /var/www/html/public/
+/var/www/bin/wireshell new --dbUser $mysql_user --dbPass $mysql_pw --dbName $mysql_db --dbHost mysql --dbCharset utf8mb4 --username $pw_user --userpass $pw_pwd --useremail $pw_email --profile regular --src /var/www/html/public/ --adminUrl admin /var/www/html/public/
 rm -r /var/www/html/tmp/
 chown 1000:1000 -R /var/www/html/public/
 
