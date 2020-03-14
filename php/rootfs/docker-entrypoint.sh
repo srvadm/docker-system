@@ -4,12 +4,12 @@ mkdir -p /var/www/html/public /var/www/logs/php /var/www/configs/php
 chown 1000:1000 /var/www/configs/php/ /var/www/logs/php/
 
 if ! [ -f "/var/www/bin/composer" ]; then
+    mkdir -p /var/www/bin
   curl -sS https://getcomposer.org/installer | php -- --install-dir=/var/www/bin --filename=composer
 else
   php /var/www/bin/composer self-update
 fi
 if ! [ -f "/var/www/bin/.composer/vendor/bin/wireshell" ]; then
-  mkdir -p /var/www/bin/.composer
   php -d memory_limit=-1 /var/www/bin/composer global require wireshell/wireshell -d /var/www/bin/.composer/
   ln -s /var/www/bin/.composer/vendor/bin/wireshell /var/www/bin/wireshell
 else
