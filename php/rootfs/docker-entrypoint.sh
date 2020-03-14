@@ -42,6 +42,11 @@ if [ -z ${pw_email-} ]; then
   echo you need to define a processwire user-email
   exit 1
 fi
+if [ -z ${domain-} ]; then
+  # check for correct email format
+  echo you need to define a processwire domain
+  exit 1
+fi
 
 mkdir -p /var/www/html/tmp/
 
@@ -68,7 +73,7 @@ php /var/www/html/tmp/wait_for_mysql.php
 
 if ! [ -n "$(ls -A /var/www/html/public/)" ]; then
   /var/www/bin/composer create-project processwire/processwire public -d /var/www/html/
-  /var/www/bin/wireshell new --dbUser $mysql_user --dbPass $mysql_pw --dbName $mysql_db --dbHost mysql --dbCharset utf8mb4 --username $pw_user --userpass $pw_pwd --useremail $pw_email --profile regular --src /var/www/html/public/ --adminUrl admin /var/www/html/public/
+  /var/www/bin/wireshell new --dbUser $mysql_user --dbPass $mysql_pw --dbName $mysql_db --dbHost mysql --dbCharset utf8mb4 --dbEngine innodb --username $pw_user --userpass $pw_pwd --useremail $pw_email --profile regular --src /var/www/html/public/ --adminUrl admin --httpHosts $domain  /var/www/html/public/
   chown 1000:1000 -R /var/www/html/public/
 fi
 rm -r /var/www/html/tmp/
