@@ -71,9 +71,9 @@ if ! [ -f "/var/www/configs/nginx/host.conf" ]; then
       try_files $uri $uri/ /index.php?it=$uri&$args;
     }
 
-  #	location / {
-  #		try_files $uri $uri/ /index.php?it=$uri&$args;
-  #	}
+	  location / {
+	  	try_files $uri $uri/ /index.php?it=$uri&$args;
+  	}
 
     location /doc/ {
       deny all;
