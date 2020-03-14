@@ -1,7 +1,7 @@
 #!/bin/sh
 
 mkdir -p /var/www/html/public /var/www/logs/php /var/www/configs/php /var/www/bin/.composer
-chown 1000:1000 /var/www/configs/php/ /var/www/logs/php/ /var/www/html/public/
+chown 1000:1000 /var/www/configs/php/ /var/www/logs/php/
 
 if ! [ -f "/var/www/bin/composer" ]; then
   curl -sS https://getcomposer.org/installer | php -- --install-dir=/var/www/bin --filename=composer
@@ -10,10 +10,10 @@ else
 fi
 if ! [ -f "/var/www/bin/.composer/vendor/bin/wireshell" ]; then
   php -d memory_limit=-1 /var/www/bin/composer global require wireshell/wireshell -d /var/www/bin/.composer/
+  ln -s /var/www/bin/.composer/vendor/bin/wireshell /var/www/bin/wireshell
 else
   php /var/www/bin/composer update wireshell/wireshell -d /var/www/bin/.composer/
 fi
-ln -s /var/www/bin/.composer/vendor/bin/wireshell /var/www/bin/wireshell
 
 if [ -z ${mysql_user-} ]; then
   echo you need to define a mysql user
@@ -63,10 +63,11 @@ while(!\$connected) {
 EOF
 php /var/www/html/tmp/wait_for_mysql.php
 
-/var/www/bin/composer create-project processwire/processwire public -d /var/www/html/
-
-/var/www/bin/wireshell new --dbUser $mysql_user --dbPass $mysql_pw --dbName $mysql_db --dbHost mysql --dbCharset utf8mb4 --username $pw_user --userpass $pw_pwd --useremail $pw_email --profile regular --src /var/www/html/public/ --adminUrl admin /var/www/html/public/
+if ! [ -d "/var/www/html/public/" ]; then
+  /var/www/bin/composer create-project processwire/processwire public -d /var/www/html/
+  /var/www/bin/wireshell new --dbUser $mysql_user --dbPass $mysql_pw --dbName $mysql_db --dbHost mysql --dbCharset utf8mb4 --username $pw_user --userpass $pw_pwd --useremail $pw_email --profile regular --src /var/www/html/public/ --adminUrl admin /var/www/html/public/
+  chown 1000:1000 -R /var/www/html/public/
+fi
 rm -r /var/www/html/tmp/
-chown 1000:1000 -R /var/www/html/public/
 
 "$@"
