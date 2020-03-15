@@ -3,7 +3,7 @@ MAINTAINER Tino Naumann <mail@ti-no.de>
 
 #RUN apk add --update-cache bash shadow pwgen \
 RUN apt-get update
-RUN apt-get install -y bash shadow pwgen \
+RUN apt-get install -y bash pwgen \
   && usermod -u 1000 www-data \
   && groupmod -g 1000 www-data
 
