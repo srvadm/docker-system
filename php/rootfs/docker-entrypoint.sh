@@ -9,12 +9,12 @@ if ! [ -f "/var/www/bin/composer" ]; then
 else
   php /var/www/bin/composer self-update
 fi
-if ! [ -f "/var/www/bin/.composer/vendor/bin/wireshell" ]; then
-  php -d memory_limit=-1 /var/www/bin/composer global require wireshell/wireshell -d /var/www/bin/.composer/
-  ln -s /var/www/bin/.composer/vendor/bin/wireshell /var/www/bin/wireshell
-else
-  php /var/www/bin/composer update wireshell/wireshell -d /var/www/bin/.composer/
-fi
+#if ! [ -f "/var/www/bin/.composer/vendor/bin/wireshell" ]; then
+#  php -d memory_limit=-1 /var/www/bin/composer global require wireshell/wireshell -d /var/www/bin/.composer/
+#  ln -s /var/www/bin/.composer/vendor/bin/wireshell /var/www/bin/wireshell
+#else
+#  php /var/www/bin/composer update wireshell/wireshell -d /var/www/bin/.composer/
+#fi
 
 if [ -z ${mysql_user-} ]; then
   echo you need to define a mysql user
@@ -77,9 +77,9 @@ EOF
 php /var/www/html/tmp/wait_for_mysql.php
 
 if ! [ -n "$(ls -A /var/www/html/public/)" ]; then
-#  /var/www/bin/composer create-project processwire/processwire public -d /var/www/html/
-  curl -sSL https://github.com/processwire/processwire/archive/master.zip -o /var/www/html/tmp/pw.zip
-  /var/www/bin/wireshell new --dbUser $mysql_user --dbPass $mysql_pw --dbName $mysql_db --dbHost mysql --dbEngine=InnoDB --dbCharset=utf8mb4 --timezone $tz --username $pw_user --userpass $pw_pwd --useremail $pw_email --profile regular --src /var/www/html/tmp/pw.zip --adminUrl admin --httpHosts $domain /var/www/html/public/
+  /var/www/bin/composer create-project processwire/processwire public -d /var/www/html/
+#  curl -sSL https://github.com/processwire/processwire/archive/master.zip -o /var/www/html/tmp/pw.zip
+#  /var/www/bin/wireshell new --dbUser $mysql_user --dbPass $mysql_pw --dbName $mysql_db --dbHost mysql --dbEngine=InnoDB --dbCharset=utf8mb4 --timezone $tz --username $pw_user --userpass $pw_pwd --useremail $pw_email --profile regular --src /var/www/html/tmp/pw.zip --adminUrl admin --httpHosts $domain /var/www/html/public/
   curl -sSL https://www.adminer.org/latest-mysql.php -o /var/www/html/public/db.php
   curl -sSL https://raw.githubusercontent.com/vrana/adminer/master/designs/pepa-linha/adminer.css -o /var/www/html/public/adminer.css
   chown 1000:1000 -R /var/www/html/public/
