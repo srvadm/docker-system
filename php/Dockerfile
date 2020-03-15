@@ -1,14 +1,11 @@
 FROM php:7.4-fpm-alpine
 MAINTAINER Tino Naumann <mail@ti-no.de>
 
-RUN apk add --update-cache shadow \
-#RUN apt-get update
-#RUN apt-get install -y pwgen \
+RUN apk add --update-cache tzdata shadow \
   && usermod -u 1000 www-data \
   && groupmod -g 1000 www-data
 
 RUN apk add --update-cache libzip-dev libpng-dev
-#RUN apt-get install -y libzip-dev libpng-dev
 RUN docker-php-ext-install mysqli \
   && docker-php-ext-install pdo_mysql \
   && docker-php-ext-install gd \

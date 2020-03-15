@@ -29,6 +29,7 @@ if [ -z ${mysql_db-} ]; then
   exit 1
 fi
 if [ -z ${pw_user-} ]; then
+  # check for requirements (min 2 chars & only letters, "0-9", "-", "_")
   echo you need to define a processwire user
   exit 1
 fi
@@ -43,12 +44,12 @@ if [ -z ${pw_email-} ]; then
   exit 1
 fi
 if [ -z ${domain-} ]; then
-  # check for correct email format
+  # check for correct domain format
   echo you need to define a processwire domain
   exit 1
 fi
 if [ -z ${tz-} ]; then
-  # check for correct email format
+  # check for correct timezone format
   echo you need to define a timezone
   exit 1
 fi
