@@ -1,4 +1,4 @@
-FROM php:7.2-fpm-alpine
+FROM php:7.2-fpm
 MAINTAINER Tino Naumann <mail@ti-no.de>
 
 RUN apk add --update-cache bash shadow pwgen \
