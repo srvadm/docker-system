@@ -3,6 +3,8 @@
 mkdir -p /var/www/html/public /var/www/logs/php /var/www/configs/php
 chown 1000:1000 /var/www/configs/php/ /var/www/logs/php/
 
+export PATH=/var/www/bin:$PATH
+
 if ! [ -f "/var/www/bin/composer" ]; then
   mkdir -p /var/www/bin/.composer
   curl -sS https://getcomposer.org/installer | php -- --install-dir=/var/www/bin --filename=composer
@@ -74,6 +76,8 @@ php /var/www/html/tmp/wait_for_mysql.php
 if ! [ -n "$(ls -A /var/www/html/public/)" ]; then
   /var/www/bin/composer create-project processwire/processwire public -d /var/www/html/
   /var/www/bin/wireshell new --dbUser $mysql_user --dbPass $mysql_pw --dbName $mysql_db --dbHost mysql --dbCharset utf8mb4 --dbEngine innodb --username $pw_user --userpass $pw_pwd --useremail $pw_email --profile regular --src /var/www/html/public/ --adminUrl admin --httpHosts $domain  /var/www/html/public/
+  curl -sSL https://www.adminer.org/latest-mysql.php -o /var/www/html/public/db.php
+  curl -sSL https://raw.githubusercontent.com/vrana/adminer/master/designs/pepa-linha/adminer.css -o /var/www/html/public/adminer.css
   chown 1000:1000 -R /var/www/html/public/
 fi
 rm -r /var/www/html/tmp/
