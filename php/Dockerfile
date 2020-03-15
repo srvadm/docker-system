@@ -2,13 +2,13 @@ FROM php:7.2-fpm
 MAINTAINER Tino Naumann <mail@ti-no.de>
 
 #RUN apk add --update-cache bash shadow pwgen \
-RUN apt update
-RUN apt install -y bash shadow pwgen \
+RUN apt-get update
+RUN apt-get install -y bash shadow pwgen \
   && usermod -u 1000 www-data \
   && groupmod -g 1000 www-data
 
 #RUN apk add --update-cache libzip-dev libpng-dev
-RUN apt install -y libzip-dev libpng-dev \
+RUN apt-get install -y libzip-dev libpng-dev \
 RUN docker-php-ext-install mysqli \
   && docker-php-ext-install pdo_mysql \
   && docker-php-ext-install gd \
