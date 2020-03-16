@@ -14,6 +14,6 @@ RUN docker-php-ext-install mysqli \
 COPY rootfs /
 RUN mv /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini \
   && rm /usr/local/etc/php/php.ini-development
-ENV ENV="/etc/profile"
+ENV PATH /var/www/bin:$PATH
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["php-fpm"]
