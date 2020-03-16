@@ -1,14 +1,15 @@
 #!/bin/sh
 
-mkdir -p /var/www/html/public /var/www/logs/php /var/www/configs/php
-chown 1000:1000 /var/www/configs/php/ /var/www/logs/php/
+# mkdir -p /var/www/html/public /var/www/logs/php /var/www/configs/php
+# chown 1000:1000 /var/www/configs/php/ /var/www/logs/php/
 
-if ! [ -f "/var/www/bin/composer" ]; then
-  mkdir -p /var/www/bin/.composer
-  curl -sS https://getcomposer.org/installer | php -- --install-dir=/var/www/bin --filename=composer
-else
-  php /var/www/bin/composer self-update
-fi
+#if ! [ -f "/var/www/bin/composer" ]; then
+#  mkdir -p /var/www/bin/.composer
+#  curl -sS https://getcomposer.org/installer | php -- --install-dir=/var/www/bin --filename=composer
+#else
+#  php /var/www/bin/composer self-update
+#fi
+
 #if ! [ -f "/var/www/bin/.composer/vendor/bin/wireshell" ]; then
 #  php -d memory_limit=-1 /var/www/bin/composer global require wireshell/wireshell -d /var/www/bin/.composer/
 #  ln -s /var/www/bin/.composer/vendor/bin/wireshell /var/www/bin/wireshell
@@ -54,9 +55,10 @@ if [ -z ${TZ-} ]; then
   exit 1
 fi
 
-mkdir -p /var/www/html/tmp/
+#mkdir -p /var/www/html/tmp/
 
-cat << EOF > /var/www/html/tmp/wait_for_mysql.php
+#cat << EOF > /var/www/html/tmp/wait_for_mysql.php
+cat << EOF > /var/www/html/bin/wait_for_mysql.php
 <?php
 \$connected = false;
 while(!\$connected) {
@@ -75,7 +77,8 @@ while(!\$connected) {
     }
 }
 EOF
-php /var/www/html/tmp/wait_for_mysql.php
+#php /var/www/html/tmp/wait_for_mysql.php
+php /var/www/html/bin/wait_for_mysql.php
 
 if ! [ -n "$(ls -A /var/www/html/public/)" ]; then
   /var/www/bin/composer create-project processwire/processwire public -d /var/www/html/
