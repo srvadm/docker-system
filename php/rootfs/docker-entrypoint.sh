@@ -9,8 +9,8 @@ if ! [ -f "/var/www/bin/composer" ]; then
 else
   php /var/www/bin/composer self-update
 fi
-cat << EOF > /etc/profile.d/modify-path
-  export PATH=/var/www/bin:\$PATH
+cat << EOF >> /etc/profile
+export PATH=/var/www/bin:\$PATH
 EOF
 #if ! [ -f "/var/www/bin/.composer/vendor/bin/wireshell" ]; then
 #  php -d memory_limit=-1 /var/www/bin/composer global require wireshell/wireshell -d /var/www/bin/.composer/
