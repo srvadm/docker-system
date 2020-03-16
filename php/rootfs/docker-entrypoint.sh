@@ -55,39 +55,31 @@ if [ -z ${TZ-} ]; then
   exit 1
 fi
 
-#mkdir -p /var/www/html/tmp/
+#cat << EOF | php --
+#<?php
+#\$connected = false;
+#while(!\$connected) {
+#    try{
+#        \$dbh = new pdo( 
+#            'mysql:host=mysql:3306;dbname=$mysql_db', '$mysql_user', '$mysql_pw',
+#            array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION)
+#        );
+#        \$connected = true;
+#    }
+#    catch(PDOException \$ex){
+#//        error_log("Could not connect to MySQL");
+#//        error_log(\$ex->getMessage());
+#//        error_log("Waiting for MySQL Connection.");
+#        sleep(5);
+#    }
+#}
+#EOF
 
-#cat << EOF > /var/www/html/tmp/wait_for_mysql.php
-cat << EOF > /var/www/html/bin/wait_for_mysql.php
-<?php
-\$connected = false;
-while(!\$connected) {
-    try{
-        \$dbh = new pdo( 
-            'mysql:host=mysql:3306;dbname=$mysql_db', '$mysql_user', '$mysql_pw',
-            array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION)
-        );
-        \$connected = true;
-    }
-    catch(PDOException \$ex){
-//        error_log("Could not connect to MySQL");
-//        error_log(\$ex->getMessage());
-//        error_log("Waiting for MySQL Connection.");
-        sleep(5);
-    }
-}
-EOF
-#php /var/www/html/tmp/wait_for_mysql.php
-php /var/www/html/bin/wait_for_mysql.php
 
-if ! [ -n "$(ls -A /var/www/html/public/)" ]; then
-  /var/www/bin/composer create-project processwire/processwire public -d /var/www/html/
+#if ! [ -n "$(ls -A /var/www/html/public/)" ]; then  
 #  curl -sSL https://github.com/processwire/processwire/archive/master.zip -o /var/www/html/tmp/pw.zip
 #  /var/www/bin/wireshell new --dbUser $mysql_user --dbPass $mysql_pw --dbName $mysql_db --dbHost mysql --dbEngine=InnoDB --dbCharset=utf8mb4 --timezone $TZ --username $pw_user --userpass $pw_pwd --useremail $pw_email --profile regular --src /var/www/html/tmp/pw.zip --adminUrl admin --httpHosts $domain /var/www/html/public/
-  curl -sSL https://www.adminer.org/latest-mysql.php -o /var/www/html/public/db.php
-  curl -sSL https://raw.githubusercontent.com/vrana/adminer/master/designs/pepa-linha/adminer.css -o /var/www/html/public/adminer.css
-  chown 1000:1000 -R /var/www/html/public/
-fi
-rm -r /var/www/html/tmp/
-
+#  chown 1000:1000 -R /var/www/html/public/
+#fi
+ls -la /var/www/html/public
 "$@"
