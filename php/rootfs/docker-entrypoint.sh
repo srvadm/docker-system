@@ -9,7 +9,7 @@ if ! [ -f "/var/www/bin/composer" ]; then
 else
   php /var/www/bin/composer self-update
 fi
-cat << EOF >> /etc/profile
+cat << EOF >> /etc/profile.d/modify_path
 export PATH=/var/www/bin:\$PATH
 EOF
 #if ! [ -f "/var/www/bin/.composer/vendor/bin/wireshell" ]; then
