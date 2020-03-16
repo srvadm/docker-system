@@ -55,25 +55,27 @@ if [ -z ${TZ-} ]; then
   exit 1
 fi
 
-#cat << EOF | php --
-#<?php
-#\$connected = false;
-#while(!\$connected) {
-#    try{
-#        \$dbh = new pdo( 
-#            'mysql:host=mysql:3306;dbname=$mysql_db', '$mysql_user', '$mysql_pw',
-#            array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION)
-#        );
-#        \$connected = true;
-#    }
-#    catch(PDOException \$ex){
-#//        error_log("Could not connect to MySQL");
-#//        error_log(\$ex->getMessage());
-#//        error_log("Waiting for MySQL Connection.");
-#        sleep(5);
-#    }
-#}
-#EOF
+cat << "EOF" | php --
+<?php
+echo $mysql_db;
+echo $_SERVER['mysql_db'];
+$connected = false;
+while(!$connected) {
+    try{
+        $dbh = new pdo( 
+            'mysql:host=mysql:3306;dbname=$mysql_db', '$mysql_user', '$mysql_pw',
+            array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION)
+        );
+        $connected = true;
+    }
+    catch(PDOException $ex){
+        error_log("Could not connect to MySQL");
+        error_log($ex->getMessage());
+        error_log("Waiting for MySQL Connection.");
+        sleep(5);
+    }
+}
+EOF
 
 
 #if ! [ -n "$(ls -A /var/www/html/public/)" ]; then  
@@ -81,5 +83,5 @@ fi
 #  /var/www/bin/wireshell new --dbUser $mysql_user --dbPass $mysql_pw --dbName $mysql_db --dbHost mysql --dbEngine=InnoDB --dbCharset=utf8mb4 --timezone $TZ --username $pw_user --userpass $pw_pwd --useremail $pw_email --profile regular --src /var/www/html/tmp/pw.zip --adminUrl admin --httpHosts $domain /var/www/html/public/
 #  chown 1000:1000 -R /var/www/html/public/
 #fi
-ls -la /var/www/html/public
+
 "$@"
