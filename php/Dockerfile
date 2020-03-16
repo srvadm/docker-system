@@ -17,8 +17,10 @@ RUN mv /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini \
 
 
 VOLUME ["/var/www"]
+RUN mkdir -p /var/www/html/public/ /var/www/logs/php/ /var/www/configs/php/ \
+  && chown www-data:www-data /var/www/html/public/ /var/www/logs/php/ /var/www/configs/php/
 USER www-data:www-data
-RUN mkdir -p /var/www/html/public /var/www/logs/php /var/www/configs/php /var/www/bin/.composer \
+RUN mkdir -p /var/www/bin/.composer \
   && curl -sS https://getcomposer.org/installer | php -- --install-dir=/var/www/bin --filename=composer
 
 ENV PATH /var/www/bin:$PATH
