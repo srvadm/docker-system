@@ -12,8 +12,7 @@ RUN apk add --update-cache libzip-dev libpng-dev  \
   && docker-php-ext-install zip                   \
   && rm -rf /var/cache/apk/*
 
-
-
+# 1
 
 COPY rootfs /
 RUN mv /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini \
