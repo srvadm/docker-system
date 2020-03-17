@@ -44,7 +44,7 @@ $connected = false;
 while(!$connected) {
   try{
     $dbh = new pdo( 
-      'mysql:host=mysql:3306;dbname=$_SERVER["mysql_db"]', '$_SERVER["mysql_user"]', '$_SERVER["mysql_pw"]',
+      'mysql:host=mysql:3306;dbname=$mysql_db', '$mysql_user', '$mysql_pw',
       array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION)
     );
     $connected = true;
@@ -52,7 +52,7 @@ while(!$connected) {
   catch(PDOException $ex){
     error_log("Could not connect to MySQL");
     error_log($ex->getMessage());
-    error_log("Waiting for MySQL Connection.");
+    error_log("Waiting for MySQL Connection. ".$mysql_db." - ".$_SERVER["mysql_user"]);
     sleep(5);
   }
 }
