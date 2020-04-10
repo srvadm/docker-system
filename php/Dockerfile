@@ -1,5 +1,5 @@
 FROM php:7.4-fpm-alpine
-MAINTAINER Tino Naumann <mail@ti-no.de>
+LABEL maintainer="Tino Naumann <mail@ti-no.de>"
 
 RUN apk add --update-cache tzdata shadow  \
   && usermod -u 1000 www-data             \
