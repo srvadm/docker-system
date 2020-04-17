@@ -22,9 +22,16 @@ mkdir -p                            \
   /var/www/configs/nginx/           \
   /var/www/configs/nginx/host.conf
 
+if [ -z ${WWW_ROOT-} ]; then
+  WWW_ROOT=/var/www/html/public
+fi
+
+cat << EOF > /var/www/configs/nginx/host.conf
+  root        $WWW_ROOT;
+EOF
 
 if ! [ -z ${PHP_HOST-} ] && ! [ -z ${PHP_PORT-} ]; then
-  cat << EOF > /var/www/configs/nginx/host.conf
+  cat << EOF >> /var/www/configs/nginx/host.conf
   location ~ \.php\$ {
     # regex to split \$uri to \$fastcgi_script_name and \$fastcgi_path
     fastcgi_split_path_info ^(.+\.php)(/.+)\$;
