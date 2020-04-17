@@ -1,0 +1,1 @@
+- check /etc/nginx/conf.d/default.conf blocking abillitys
