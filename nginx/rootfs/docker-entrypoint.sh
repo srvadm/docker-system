@@ -71,7 +71,7 @@ if ! [ -z ${PHP_HOST-} ] && ! [ -z ${PHP_PORT-} ]; then
     fastcgi_param   REDIRECT_STATUS       200;
 
     # With php-cgi (or other tcp sockets):
-    fastcgi_pass    $PHP_HOST:PHP_PORT;
+    fastcgi_pass    $PHP_HOST:$PHP_PORT;
   }
 EOF
 
