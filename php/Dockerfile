@@ -18,12 +18,12 @@ COPY rootfs /
 RUN mv /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini \
   && rm /usr/local/etc/php/php.ini-development
 
-RUN mkdir -p /var/www/html/public/ /var/www/logs/php/ /var/www/configs/php/ /var/www/bin/                 \
-  && chown www-data:www-data /var/www/html/public/ /var/www/logs/php/ /var/www/configs/php/ /var/www/bin/
+RUN mkdir -p /var/www/html/public/ /var/logs/php/ /var/configs/php/ /var/www/bin/                 \
+  && chown www-data:www-data /var/www/html/public/ /var/logs/php/ /var/configs/php/ /var/www/bin/
 USER www-data:www-data
 RUN mkdir -p /var/www/bin/.composer                                                                                                       \
   && curl -sS https://getcomposer.org/installer | php -- --install-dir=/var/www/bin --filename=composer                                   \
-  && /var/www/bin/composer create-project processwire/processwire public -d /var/www/html/                                                \
+  && /var/www/bin/composer create-project processwire/processwire public 3.0.123 -d /var/www/html/                                        \
   && curl -sSL https://www.adminer.org/latest-mysql.php -o /var/www/html/public/db.php                                                    \
   && curl -sSL https://raw.githubusercontent.com/vrana/adminer/master/designs/pepa-linha/adminer.css -o /var/www/html/public/adminer.css
 

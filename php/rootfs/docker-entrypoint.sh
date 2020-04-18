@@ -1,33 +1,22 @@
 #!/bin/sh
 
-if [ -z ${mysql_user-} ]; then
+set -o errexit
+set -o pipefail
+set -o nounset
+
+if [ -z ${MYSQL_USER-} ]; then
   echo you need to define a mysql user
   exit 1
 fi
-if [ -z ${mysql_pw-} ]; then
+if [ -z ${MYSQL_PASSWORD-} ]; then
   echo you need to define a mysql user password
   exit 1
 fi
-if [ -z ${mysql_db-} ]; then
+if [ -z ${MYSQL_DATABASE-} ]; then
   echo you need to define a mysql database
   exit 1
 fi
-if [ -z ${pw_user-} ]; then
-  # check for requirements (min 2 chars & only letters, "0-9", "-", "_")
-  echo you need to define a processwire user
-  exit 1
-fi
-if [ -z ${pw_pwd-} ]; then
-  # check for passwordrequirements (min 6 chars)
-  echo you need to define a processwire user-password
-  exit 1
-fi
-if [ -z ${pw_email-} ]; then
-  # check for correct email format
-  echo you need to define a processwire user-email
-  exit 1
-fi
-if [ -z ${domain-} ]; then
+if [ -z ${DOMAIN-} ]; then
   # check for correct domain format
   echo you need to define a processwire domain
   exit 1
@@ -38,24 +27,68 @@ if [ -z ${TZ-} ]; then
   exit 1
 fi
 
-cat << "EOF" | php --
+cat << EOF | php --
 <?php
-$connected = false;
-while(!$connected) {
+\$connected = false;
+while(!\$connected) {
   try{
-    $dbh = new pdo( 
-      'mysql:host=mysql:3306;dbname=$mysql_db', '$mysql_user', '$mysql_pw',
+    \$dbh = new pdo(
+      'mysql:host=mysql:3306;dbname=$MYSQL_DATABASE', '$MYSQL_USER', '$MYSQL_PASSWORD',
       array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION)
     );
-    $connected = true;
+    \$connected = true;
   }
-  catch(PDOException $ex){
+  catch(PDOException \$ex){
     error_log("Could not connect to MySQL");
-    error_log($ex->getMessage());
-    error_log("Waiting for MySQL Connection. ".$mysql_db." - ".$_SERVER["mysql_user"]);
+    error_log(\$ex->getMessage());
+    error_log("Waiting for MySQL Connection.");
     sleep(5);
   }
 }
 EOF
+
+if [ -f '/var/configs/php/init.sql' ]; then
+cat << EOF | php --
+<?php
+\$filename = '/var/configs/php/init.sql';
+\$mysql_host = 'mysql';
+\$mysql_username = '$MYSQL_USER';
+\$mysql_password = '$MYSQL_PASSWORD';
+\$mysql_database = '$MYSQL_DATABASE';
+
+// Connect to MySQL server
+\$con = @new mysqli(\$mysql_host,\$mysql_username,\$mysql_password,\$mysql_database);
+
+// Check connection
+if (\$con->connect_errno) {
+  echo "Failed to connect to MySQL: " . \$con->connect_errno;
+  echo "<br/>Error: " . \$con->connect_error;
+}
+
+// Temporary variable, used to store current query
+\$templine = '';
+// Read in entire file
+\$lines = file(\$filename);
+// Loop through each line
+foreach (\$lines as \$line) {
+// Skip it if it's a comment
+  if (substr(\$line, 0, 2) == '--' || \$line == '')
+    continue;
+
+// Add this line to the current segment
+  \$templine .= \$line;
+// If it has a semicolon at the end, it's the end of the query
+  if (substr(trim(\$line), -1, 1) == ';') {
+      // Perform the query
+      \$con->query(\$templine) or print('Error performing query \'<strong>' . \$templine . '\': ' . \$con->error() . '<br /><br />');
+      // Reset temp variable to empty
+      \$templine = '';
+  }
+}
+echo "Tables imported successfully";
+\$con->close();
+EOF
+  rm /var/configs/php/init.sql
+fi
 
 "$@"
