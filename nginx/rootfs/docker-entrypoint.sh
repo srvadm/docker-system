@@ -14,7 +14,7 @@ mkdir -p                            \
   /var/logs/nginx/                  \
   /var/configs/nginx/host/          \
 && touch                            \
-  /var/www/configs/nginx/mail.conf  \
+  /var/configs/nginx/mail.conf  \
 && chown 1000:1000                  \
   /var/www/html/public/             \
   /var/logs/nginx/
@@ -23,12 +23,12 @@ if [ -z ${WWW_ROOT-} ]; then
   WWW_ROOT=/var/www/html/public
 fi
 
-cat << EOF > /var/www/configs/nginx/host/www_root.conf
+cat << EOF > /var/configs/nginx/host/www_root.conf
   root        $WWW_ROOT;
 EOF
 
 
-  cat << EOF > /var/www/configs/nginx/host/php.conf
+  cat << EOF > /var/configs/nginx/host/php.conf
   location ~ \.php\$ {
     # regex to split \$uri to \$fastcgi_script_name and \$fastcgi_path
     fastcgi_split_path_info ^(.+\.php)(/.+)\$;
