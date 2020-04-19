@@ -10,13 +10,11 @@ if [ -z ${DOMAIN-} ]; then
 fi
 
 mkdir -p                            \
-  /var/www/html/public/             \
   /var/logs/nginx/                  \
   /var/configs/nginx/host/          \
 && touch                            \
-  /var/configs/nginx/mail.conf  \
+  /var/configs/nginx/mail.conf      \
 && chown 1000:1000                  \
-  /var/www/html/public/             \
   /var/logs/nginx/
 
 if [ -z ${WWW_ROOT-} ]; then
@@ -27,7 +25,7 @@ cat << EOF > /var/configs/nginx/host/www_root.conf
   root        $WWW_ROOT;
 EOF
 
-
+if ! [ -z ${PHP_HOST-} ] && ! [ -z ${PHP_PORT-} ]; then
   cat << EOF > /var/configs/nginx/host/php.conf
   location ~ \.php\$ {
     # regex to split \$uri to \$fastcgi_script_name and \$fastcgi_path
@@ -72,12 +70,14 @@ EOF
   }
 EOF
 
-if ! [ -z ${PHP_HOST-} ] && ! [ -z ${PHP_PORT-} ]; then
   while ! [ $(nc -z $PHP_HOST $PHP_PORT; echo $?) -eq 0 ]
   do
     echo "Waiting for $PHP_HOST Connection."
     sleep 5
   done
+else
+  mkdir -p $WWW_ROOT \
+  && chown 1000:1000 $WWW_ROOT
 fi
 
 "$@"
