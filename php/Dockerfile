@@ -40,11 +40,7 @@ RUN mkdir -p                                  \
     --install-dir=/var/www/bin                \
     --filename=composer                       \
   && /var/www/bin/composer                    \
-  create-project                              \
-  processwire/processwire                     \
-  public                                      \
-  3.0.148                                     \
-  -d /var/www/html/                           \
+    create-project processwire/processwire public 3.0.123 -d /var/www/html/ \
   && curl -sSL                                \
     https://www.adminer.org/latest-mysql.php  \
     -o /var/www/html/public/db.php            \
@@ -52,7 +48,9 @@ RUN mkdir -p                                  \
     https://raw.githubusercontent.com/vrana/adminer/master/designs/pepa-linha/adminer.css \
     -o /var/www/html/public/adminer.css
 
-ENV PATH /var/www/bin:$PATH
+#ENV PATH /var/www/bin:$PATH
+
 VOLUME ["/var/www"]
+
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["php-fpm"]
