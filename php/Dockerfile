@@ -25,18 +25,32 @@ RUN mv                                      \
     /var/configs/php/                       \
     /var/www/bin/                           \
   && chown www-data:www-data                \
-    /var/www/html/public/                   \
+    /var/www/html/                          \
     /var/logs/php/                          \
     /var/configs/php/                       \
     /var/www/bin/
 
 USER www-data:www-data
 
-RUN mkdir -p /var/www/bin/.composer                                                                                                       \
-  && curl -sS https://getcomposer.org/installer | php -- --install-dir=/var/www/bin --filename=composer                                   \
-  && /var/www/bin/composer create-project processwire/processwire public 3.0.123 -d /var/www/html/                                        \
-  && curl -sSL https://www.adminer.org/latest-mysql.php -o /var/www/html/public/db.php                                                    \
-  && curl -sSL https://raw.githubusercontent.com/vrana/adminer/master/designs/pepa-linha/adminer.css -o /var/www/html/public/adminer.css
+RUN mkdir -p                                  \
+    /var/www/bin/.composer                    \
+  && curl -sSL                                \
+    https://getcomposer.org/installer |       \
+    php --                                    \
+    --install-dir=/var/www/bin                \
+    --filename=composer                       \
+  && /var/www/bin/composer                    \
+  create-project                              \
+  processwire/processwire                     \
+  public                                      \
+  3.0.148                                     \
+  -d /var/www/html/                           \
+  && curl -sSL                                \
+    https://www.adminer.org/latest-mysql.php  \
+    -o /var/www/html/public/db.php            \
+  && curl -sSL                                \
+    https://raw.githubusercontent.com/vrana/adminer/master/designs/pepa-linha/adminer.css \
+    -o /var/www/html/public/adminer.css
 
 ENV PATH /var/www/bin:$PATH
 VOLUME ["/var/www"]
