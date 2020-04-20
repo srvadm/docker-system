@@ -38,7 +38,12 @@ RUN mkdir -p /var/www/bin/.composer           \
     php --                                    \
     --install-dir=/var/www/bin                \
     --filename=composer                       \
-  && /var/www/bin/composer create-project processwire/processwire public 3.0.148 -d /var/www/html/ \
+  && /var/www/bin/composer                    \
+    create-project                            \
+    processwire/processwire                   \
+    public                                    \
+    3.0.148                                   \
+    -d /var/www/html/                         \
   && curl -sSL                                \
     https://www.adminer.org/latest-mysql.php  \
     -o /var/www/html/public/db.php            \
