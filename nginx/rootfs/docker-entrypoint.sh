@@ -69,7 +69,7 @@ if ! [ -z ${PHP_HOST-} ] && ! [ -z ${PHP_PORT-} ]; then
     fastcgi_pass    $PHP_HOST:$PHP_PORT;
   }
 EOF
-
+ 
   while ! [ $(nc -z $PHP_HOST $PHP_PORT; echo $?) -eq 0 ]
   do
     echo "Waiting for $PHP_HOST Connection."
